@@ -22,6 +22,9 @@ class StockDB():
     def __init__(self):
         self.Reset()
 
+    def SetCodeLst(self,CodeLstFile):
+        self.CodeLstFile = CodeLstFile
+
     def GetAllStockCode(self,outfile='StockCode.txt'):
         f = open(outfile,'w')
         for aCode in twstock.codes.keys():
@@ -50,13 +53,29 @@ class StockDB():
             'avg5_Cap' :    avg5_Cap, 
             'avg10_Cap' :   avg10_Cap
         }
-        time.sleep(2.5)
-    
+        time.sleep(5)
+   
+    def GetAllStockFromWeb(self):
+        with open(self.CodeLstFile) as Code_f:
+            CodesLst = Code_f.read().strip().split()
+        Cnt = 0
+        for aCode in CodesLst:
+            try:
+                aStDB.GetOneStock(aCode)
+            except:
+                print('%s is Error' % aCode)
+            Cnt = Cnt + 1
+            print('%s: %s ... Processing ...' % (Cnt,aCode) )
+            if Cnt % 50 == 0 : aStDB.SaveDB()
+
+        aStDB.SaveDB()
+     
+
     def SaveDB(self,jsonfile='StockData.json'):
         with open(jsonfile,'w') as outf:
             json.dump(self.AllStockData,outf)
 
-    def LoadDB(self,jsonfile='StockData.json'):
+    def GetAllStockFromFile(self,jsonfile='StockData.json'):
         with open(jsonfile,'r') as inf:
             self.AllStockData = json.load(inf)
 

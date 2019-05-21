@@ -4,24 +4,22 @@ import StockDB
 
 def main():
     StockCodeLst = 'StockCode.txt'
-    aStDB = StockDB.StockDB()
 
+    aStDB = StockDB.StockDB()
+    aStDB.SetCodeLst(StockCodeLst)
     #aStDB.GetAllStockCode(StockCodeLst)   => Initial Stock Code list. Only use it when we need to update
 
-    with open(StockCodeLst) as Code_f:
-        CodesLst = Code_f.read().strip().split()
-    Cnt = 0
-    for aCode in CodesLst:
-        try:
-            aStDB.GetOneStock(aCode)
-        except:
-            print('%s is Error' % aCode)
-        Cnt = Cnt + 1
-        print('%s: %s ... Processing ...' % (Cnt,aCode) )
-        if Cnt % 50 == 0 : aStDB.SaveDB()
-    #aStDB.GetOneStock('2330')
-    #aStDB.GetOneStock('00672L')
+    # Load data from Web, and save it to *.json
+    #aStDB.GetAllStockFromWeb()
 
-    aStDB.SaveDB()
+    # Load data from *.json
+    aStDB.GetAllStockFromFile()
+
+    for aCode in aStDB.AllStockData.keys():
+        aStockData = aStDB.AllStockData[aCode]
+        try:
+            print('Code: %s, Cap: %s, avg10Cap: %s' % (aCode, aStockData['price'][0], aStockData['avg10_Price'][0]))
+        except:
+            print('Error in Code %s' % aCode)
 
 if __name__ == '__main__':main()
