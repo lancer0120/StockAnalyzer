@@ -59,3 +59,9 @@ class StockDB():
     def LoadDB(self,jsonfile='StockData.json'):
         with open(jsonfile,'r') as inf:
             self.AllStockData = json.load(inf)
+
+
+def main():
+    print('This is StockDB class, no test-function now')
+
+if __name__ == '__main__':main()
