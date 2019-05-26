@@ -1,6 +1,6 @@
 import os
 import twstock
-import StockDB
+import StockDB, StockStrategy
 
 def main():
     StockCodeLst = 'StockCode.txt'
@@ -16,11 +16,9 @@ def main():
     # Load data from *.json
     #aStDB.GetAllStockFromFile()
 
-    for aCode in aStDB.AllStockData.keys():
-        aStockData = aStDB.AllStockData[aCode]
-        try:
-            print('Code: %s, price: %s, avg10Price: %s' % (aCode, aStockData['price'][0], aStockData['avg10_Price'][0]))
-        except:
-            print('Error in Code %s' % aCode)
+    #########################################
+    aStrategy = StockStrategy.StockStrategy()
+    aStrategy.SetStockData(aStDB.AllStockData)
+    aStrategy.wrk1()
 
 if __name__ == '__main__':main()
