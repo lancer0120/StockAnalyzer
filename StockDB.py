@@ -1,4 +1,5 @@
 import twstock
+import random
 import time
 import os
 import json
@@ -34,14 +35,22 @@ class StockDB():
 
     def GetOneStock(self,StockCode):
         stock    = twstock.Stock(StockCode)
+
         high     = stock.high
         low      = stock.low
         price    = stock.price
         capacity = stock.capacity
-        avg5_Price= stock.moving_average(stock.price,5)
-        avg10_Price= stock.moving_average(stock.price,10)
-        avg5_Cap= stock.moving_average(stock.capacity,5)
-        avg10_Cap= stock.moving_average(stock.capacity,10)
+
+        try:
+            avg5_Price= stock.moving_average(stock.price,5)
+            avg10_Price= stock.moving_average(stock.price,10)
+            avg5_Cap= stock.moving_average(stock.capacity,5)
+            avg10_Cap= stock.moving_average(stock.capacity,10)
+        except:
+            avg5_Price   = None 
+            avg10_Price  = None
+            avg5_Cap     = None
+            avg10_Cap    = None
 
         self.AllStockData[StockCode] = {
             'high' : high,
@@ -53,22 +62,35 @@ class StockDB():
             'avg5_Cap' :    avg5_Cap, 
             'avg10_Cap' :   avg10_Cap
         }
-        time.sleep(5)
+        time.sleep(random.uniform(10,15))
    
     def GetAllStockFromWeb(self):
+        i = 0
+        while(1):
+            if os.path.isfile('StockData_%s.json' % i): 
+                i = i + 1
+            else:
+                jsonfile='StockData_%s.json' % i
+                break
+        print (jsonfile)
         with open(self.CodeLstFile) as Code_f:
             CodesLst = Code_f.read().strip().split()
         Cnt = 0
         for aCode in CodesLst:
+            if aCode in self.AllStockData:
+                print('%s is already in database, skip it' % aCode)
+                continue
             try:
-                aStDB.GetOneStock(aCode)
+                self.GetOneStock(aCode)
             except:
                 print('%s is Error' % aCode)
+                time.sleep(random.uniform(10,15))
             Cnt = Cnt + 1
             print('%s: %s ... Processing ...' % (Cnt,aCode) )
-            if Cnt % 50 == 0 : aStDB.SaveDB()
+            if Cnt % 10 == 0 : self.SaveDB(jsonfile)
 
-        aStDB.SaveDB()
+        self.SaveDB(jsonfile)
+
      
 
     def SaveDB(self,jsonfile='StockData.json'):

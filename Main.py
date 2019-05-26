@@ -10,15 +10,16 @@ def main():
     #aStDB.GetAllStockCode(StockCodeLst)   => Initial Stock Code list. Only use it when we need to update
 
     # Load data from Web, and save it to *.json
+    aStDB.GetAllStockFromFile()
     #aStDB.GetAllStockFromWeb()
 
     # Load data from *.json
-    aStDB.GetAllStockFromFile()
+    #aStDB.GetAllStockFromFile()
 
     for aCode in aStDB.AllStockData.keys():
         aStockData = aStDB.AllStockData[aCode]
         try:
-            print('Code: %s, Cap: %s, avg10Cap: %s' % (aCode, aStockData['price'][0], aStockData['avg10_Price'][0]))
+            print('Code: %s, price: %s, avg10Price: %s' % (aCode, aStockData['price'][0], aStockData['avg10_Price'][0]))
         except:
             print('Error in Code %s' % aCode)
 
