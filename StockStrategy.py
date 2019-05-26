@@ -22,7 +22,7 @@ class StockStrategy():
         self.AllStockData = AllStockData
 
     def wrk1(self):
-    ## In this work, we find all stock Cap. > 10days average Cap.
+    ## In this work, we find all stock Cap. > 10days average Cap. x 3
         f = open('wrk1.rpt','w')
         f_err = open('err.log','w')
         for aCode in self.AllStockData.keys():
